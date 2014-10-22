@@ -41,7 +41,7 @@ trait PropertyTrait {
      */
     public function properties()
     {
-        $instance = new Property();
+        $instance = new static();
 
         return new PropertyHasMany($instance->newQuery(), $this, $this->getMorphClass());
     }
