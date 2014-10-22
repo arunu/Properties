@@ -1,5 +1,5 @@
 {
-    "name": "devio/attributes",
+    "name": "devio/properties",
     "description": "",
     "authors": [
         {
@@ -17,7 +17,7 @@
             "src/migrations"
         ],
         "psr-0": {
-            "Devio\\Attributes\\": "src/"
+            "Devio\\Properties\\": "src/"
         }
     },
     "minimum-stability": "stable"
