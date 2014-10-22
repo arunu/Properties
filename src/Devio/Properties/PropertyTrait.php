@@ -81,7 +81,23 @@ trait PropertyTrait {
     }
 
     /**
-     * Finds the property value into the relations collections.
+     * Finds into the eloquent collection results the collection that belongs
+     * to the foreign key
+     *
+     * @param $foreignKey
+     *
+     * @return mixed
+     */
+    protected function getPropertyCollection($foreignKey)
+    {
+        $propertyCollection = $this->values->find($foreignKey, $this->getPropertyForeignKey());
+
+        // If it is a string means that no value record was found, return just null.
+        return is_string($propertyCollection) ? null : $propertyCollection;
+    }
+
+    /**
+     * Returns the property value into the relations collections.
      *
      * @param $key
      *
@@ -91,15 +107,25 @@ trait PropertyTrait {
     {
         $foreignKey = $this->findPropertyKey($key);
 
-        // Finds into the eloquent collection results the collection that belongs
-        // to the property_id
-        $propertyCollection = $this->values->find($foreignKey, 'property_id');
+        // If the property is found into the values collection return its value.
+        // If not is found just return the getPropertyCollection result which
+        // is null.
+        if ($collection = $this->getPropertyCollection($foreignKey))
+            return $collection->value;
 
-        // If is a string means that no value record was found, return just null.
-        if (is_string($propertyCollection))
-            return null;
+        return $collection;
+    }
 
-        return $propertyCollection->value;
+    /**
+     * Returns the property table foreign key.
+     *
+     * @return string
+     */
+    public function getPropertyForeignKey()
+    {
+        $instance = new Property;
+
+        return $instance->getForeignKey();
     }
 
     /**
