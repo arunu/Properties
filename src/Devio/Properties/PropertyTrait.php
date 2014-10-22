@@ -95,6 +95,10 @@ trait PropertyTrait {
         // to the property_id
         $propertyCollection = $this->values->find($foreignKey, 'property_id');
 
+        // If is a string means that no value record was found, return just null.
+        if (is_string($propertyCollection))
+            return null;
+
         return $propertyCollection->value;
     }
 
