@@ -1,6 +1,6 @@
 <?php namespace Devio\Properties;
 
-use Devio\Properties\Relations\AttributeHasMany;
+use Devio\Properties\Relations\PropertyHasMany;
 
 trait PropertyTrait {
 
@@ -11,7 +11,23 @@ trait PropertyTrait {
      *
      * @var string
      */
-    private $propertyForeignKey = 'entity';
+    protected $propertyForeignKey = 'entity';
+
+    /**
+     * @var array
+     */
+    public static $properties = [];
+
+    /**
+     * Booting the trait. Filling the properties array with the available properties
+     * to the current entity.
+     */
+    public static function bootPropertyTrait()
+    {
+        $instance = new static;
+
+        static::$properties = $instance->properties()->get()->list('name');
+    }
 
     /**
      * Relationship to the attributes table using the custom AttributeHasMany
@@ -41,6 +57,7 @@ trait PropertyTrait {
      */
     public function __get($key)
     {
+        return parent::__get($key);
     }
 
 } 
