@@ -1,4 +1,4 @@
-<?php namespace Devio\Attributes;
+<?php namespace Devio\Properties;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -18,7 +18,7 @@ class AttributesServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		$this->package('devio/attributes');
+		$this->package('devio/properties');
 	}
 
 	/**

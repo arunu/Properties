@@ -1,11 +1,11 @@
-<?php namespace Devio\Attributes\Relations;
+<?php namespace Devio\Properties\Relations;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class AttributeHasMany extends HasMany {
+class PropertyHasMany extends HasMany {
 
     protected $entity;
 

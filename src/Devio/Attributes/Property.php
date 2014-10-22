@@ -1,8 +1,8 @@
-<?php namespace Devio\Attributes;
+<?php namespace Devio\Properties;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class Attribute extends Eloquent {
+class Property extends Eloquent {
 
     /**
      * @var array
@@ -14,7 +14,7 @@ class Attribute extends Eloquent {
      */
     public function value()
     {
-        return $this->hasMany('Devio\Attributes\Value');
+        return $this->hasMany('Devio\Properties\Value');
     }
 
 } 

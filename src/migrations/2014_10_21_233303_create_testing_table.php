@@ -12,7 +12,7 @@ class CreateTestingTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('attributes_testing', function (Blueprint $table)
+		Schema::create('properties_testing', function (Blueprint $table)
         {
             $table->increments('id');
 
@@ -29,7 +29,7 @@ class CreateTestingTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('attributes_testing');
+		Schema::drop('properties_testing');
 	}
 
 }

@@ -1,4 +1,4 @@
-<?php namespace Devio\Attributes;
+<?php namespace Devio\Properties;
 
 /*
  * This class will be responsible of managing attributes:
@@ -7,6 +7,6 @@
  *  - Delete and recursively its values
  *  - List them
  */
-class AttributeManager {
+class PropertyManager {
 
 } 
