@@ -30,7 +30,7 @@ trait PropertyTrait {
     {
         $instance = new static;
 
-        static::$properties = $instance->properties()->get()->list('name');
+        static::$properties = $instance->properties()->get()->lists('name');
     }
 
     /**
@@ -41,7 +41,7 @@ trait PropertyTrait {
      */
     public function properties()
     {
-        $instance = new static;
+        $instance = new Property;
 
         return new PropertyHasMany($instance->newQuery(), $this, $this->getMorphClass());
     }
@@ -58,10 +58,26 @@ trait PropertyTrait {
 
     /**
      * @param $key
+     *
+     * @return bool
+     */
+    protected function isProperty($key)
+    {
+        dd($key);
+        return isset($this->properties[$key]);
+    }
+
+    /**
+     * @param $key
      */
     public function __get($key)
     {
-        return parent::__get($key);
+        if ($this->isProperty($key))
+        {
+            dd('is a property');
+        }
+
+//        return parent::__get($key);
     }
 
 } 
