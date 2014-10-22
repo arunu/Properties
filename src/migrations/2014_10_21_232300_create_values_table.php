@@ -16,7 +16,7 @@ class CreateValuesTable extends Migration {
         {
             $table->increments('id');
 
-            $table->integer('attribute_id');
+            $table->integer('property_id');
 
             $table->string('value');
 
