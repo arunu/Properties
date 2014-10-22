@@ -30,7 +30,7 @@ trait PropertyTrait {
     {
         $instance = new static;
 
-        static::$properties = $instance->properties()->get()->lists('name');
+        static::$properties = $instance->properties()->get()->lists('name', 'id');
     }
 
     /**
@@ -57,27 +57,60 @@ trait PropertyTrait {
     }
 
     /**
+     * Will check if a property exists in the current entity.
+     *
      * @param $key
      *
      * @return bool
      */
     protected function isProperty($key)
     {
-        dd($key);
-        return isset($this->properties[$key]);
+        return in_array($key, static::$properties);
+    }
+
+    /**
+     * Get the property primary key by property name
+     *
+     * @param $name
+     *
+     * @return mixed
+     */
+    protected function findPropertyKey($name)
+    {
+        return array_search($name, static::$properties);
+    }
+
+    /**
+     * Finds the property value into the relations collections.
+     *
+     * @param $key
+     *
+     * @return mixed
+     */
+    public function getProperty($key)
+    {
+        $foreignKey = $this->findPropertyKey($key);
+
+        // Finds into the eloquent collection results the collection that belongs
+        // to the property_id
+        $propertyCollection = $this->values->find($foreignKey, 'property_id');
+
+        return $propertyCollection->value;
     }
 
     /**
      * @param $key
+     *
+     * @return mixed
      */
     public function __get($key)
     {
         if ($this->isProperty($key))
         {
-            dd('is a property');
+            return $this->getProperty($key);
         }
 
-//        return parent::__get($key);
+        return parent::__get($key);
     }
 
 } 
