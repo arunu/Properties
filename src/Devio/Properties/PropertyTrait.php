@@ -129,6 +129,9 @@ trait PropertyTrait {
     }
 
     /**
+     * Provides the property value if it does exist. Custom parent
+     * __get function will be called if not.
+     *
      * @param $key
      *
      * @return mixed
