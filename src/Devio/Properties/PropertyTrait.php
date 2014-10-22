@@ -22,6 +22,8 @@ trait PropertyTrait {
      */
     public static $properties = [];
 
+    protected $valueCreationQueue = [];
+
     /**
      * Booting the trait. Filling the properties array with the available properties
      * to the current entity.
@@ -31,6 +33,9 @@ trait PropertyTrait {
         $instance = new static;
 
         static::$properties = $instance->properties()->get()->lists('name', 'id');
+
+        // Register custom observer for handling events
+        static::observe(new PropertyObserver);
     }
 
     /**
@@ -90,10 +95,13 @@ trait PropertyTrait {
      */
     protected function getPropertyCollection($foreignKey)
     {
-        $propertyCollection = $this->values->find($foreignKey, $this->getPropertyForeignKey());
+        foreach ($this->values as $value)
+        {
+            if ($value->{$this->getPropertyForeignKey()} == $foreignKey)
+                return $value;
+        }
 
-        // If it is a string means that no value record was found, return just null.
-        return is_string($propertyCollection) ? null : $propertyCollection;
+        return null;
     }
 
     /**
@@ -103,7 +111,7 @@ trait PropertyTrait {
      *
      * @return mixed
      */
-    public function getProperty($key)
+    public function getPropertyValue($key)
     {
         $foreignKey = $this->findPropertyKey($key);
 
@@ -114,6 +122,46 @@ trait PropertyTrait {
             return $collection->value;
 
         return $collection;
+    }
+
+    public function setPropertyValue($key, $value)
+    {
+        $foreignKey = $this->findPropertyKey($key);
+
+        $collection = $this->getPropertyCollection($foreignKey);
+
+        if ($collection)
+        {
+            $collection->value = $value;
+        }
+        else
+        {
+            $this->queueValueCreation($foreignKey, $value);
+        }
+    }
+
+    /**
+     * Adds a new item to the property creation queue.
+     *
+     * @param $foreignKey
+     * @param $value
+     */
+    protected function queueValueCreation($foreignKey, $value)
+    {
+        $this->valueCreationQueue[] = [
+            'property' => $foreignKey,
+            'value' => $value
+        ];
+    }
+
+    /**
+     * Provides access to the property value creation queue.
+     *
+     * @return array
+     */
+    public function getValueCreationQueue()
+    {
+        return $this->valueCreationQueue;
     }
 
     /**
@@ -140,10 +188,26 @@ trait PropertyTrait {
     {
         if ($this->isProperty($key))
         {
-            return $this->getProperty($key);
+            return $this->getPropertyValue($key);
         }
 
         return parent::__get($key);
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function __set($key, $value)
+    {
+        if ($this->isProperty($key))
+        {
+            $this->setPropertyValue($key, $value);
+        }
+        else
+        {
+            parent::__set($key, $value);
+        }
     }
 
 } 
