@@ -14,6 +14,10 @@ trait PropertyTrait {
     protected $propertyForeignKey = 'entity';
 
     /**
+     * Contains an array of registered properties to the current entity.
+     * This can be iterated to determine if an attribute belongs to
+     * the properties table.
+     *
      * @var array
      */
     public static $properties = [];
