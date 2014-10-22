@@ -22,6 +22,11 @@ trait PropertyTrait {
      */
     public static $properties = [];
 
+    /**
+     * List of values that have to be created when the entity model is saved.
+     *
+     * @var array
+     */
     protected $valueCreationQueue = [];
 
     /**
@@ -93,7 +98,7 @@ trait PropertyTrait {
      *
      * @return mixed
      */
-    protected function getPropertyCollection($foreignKey)
+    protected function getValueElement($foreignKey)
     {
         foreach ($this->values as $value)
         {
@@ -116,23 +121,33 @@ trait PropertyTrait {
         $foreignKey = $this->findPropertyKey($key);
 
         // If the property is found into the values collection return its value.
-        // If not is found just return the getPropertyCollection result which
+        // If not is found just return the getPropertyElement result which
         // is null.
-        if ($collection = $this->getPropertyCollection($foreignKey))
-            return $collection->value;
+        if ($element = $this->getValueElement($foreignKey))
+            return $element->value;
 
-        return $collection;
+        return $element;
     }
 
+    /**
+     * Sets a property value. Checks if the value already exists or a new one
+     * needs to be created.
+     *
+     * @param $key
+     * @param $value
+     */
     public function setPropertyValue($key, $value)
     {
         $foreignKey = $this->findPropertyKey($key);
 
-        $collection = $this->getPropertyCollection($foreignKey);
+        $element = $this->getValueElement($foreignKey);
 
-        if ($collection)
+        // Is any value element was found, update the value and that's all we need.
+        // If no element is found means it doesn't even exist into the database,
+        // just add a new item to the value creation queue for later creation.
+        if ($element)
         {
-            $collection->value = $value;
+            $element->value = $value;
         }
         else
         {
@@ -195,6 +210,9 @@ trait PropertyTrait {
     }
 
     /**
+     * If the key matches any property, overrides default behaviour and
+     * modifies the property instead.
+     *
      * @param $key
      * @param $value
      */
