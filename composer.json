@@ -1,6 +1,6 @@
 {
     "name": "devio/properties",
-    "description": "",
+    "description": "Eloquent support for working with the EAV data model. Dynamically add attributes to models without modifying the database schema.",
     "authors": [
         {
             "name": "Israel Ortuño",
@@ -10,7 +10,8 @@
     "require": {
         "php": ">=5.4.0",
         "illuminate/support": "4.2.*",
-        "illuminate/database": "4.2.*"
+        "illuminate/database": "4.2.*",
+        "illuminate/config": "4.2.*"
     },
     "autoload": {
         "classmap": [
