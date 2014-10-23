@@ -1,4 +1,4 @@
-<?php namespace Devio\Properties;
+<?php namespace Devio\Properties\Models;
 
 use Devio\Properties\Observers\PropertyObserver;
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -27,7 +27,7 @@ class Property extends Eloquent {
      */
     public function value()
     {
-        return $this->hasMany('Devio\Properties\Value');
+        return $this->hasMany('Devio\Properties\Models\Value');
     }
 
     /**
@@ -37,7 +37,7 @@ class Property extends Eloquent {
      */
     public function category()
     {
-        return $this->belongsTo('Devio\Properties\PropertyCategory');
+        return $this->belongsTo('Devio\Properties\Models\PropertyCategory');
     }
 
 } 

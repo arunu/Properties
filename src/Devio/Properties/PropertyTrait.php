@@ -64,7 +64,7 @@ trait PropertyTrait {
      */
     public function values()
     {
-        return $this->morphMany('Devio\Properties\Value', $this->propertyForeignKey);
+        return $this->morphMany('Devio\Properties\Models\Value', $this->propertyForeignKey);
     }
 
     /**

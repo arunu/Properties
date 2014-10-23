@@ -1,4 +1,4 @@
-<?php namespace Devio\Properties;
+<?php namespace Devio\Properties\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
@@ -14,7 +14,7 @@ class Value extends Eloquent {
      */
     public function property()
     {
-        return $this->belongsTo('Devio\Properties\Property');
+        return $this->belongsTo('Devio\Properties\Models\Property');
     }
 
     /**

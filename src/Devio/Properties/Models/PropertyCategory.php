@@ -1,4 +1,4 @@
-<?php namespace Devio\Properties; 
+<?php namespace Devio\Properties\Models;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
@@ -13,6 +13,6 @@ class PropertyCategory extends Eloquent {
      */
     public function properties()
     {
-        return $this->hasMany('Devio\Properties\Property');
+        return $this->hasMany('Devio\Properties\Models\Property');
     }
 } 
