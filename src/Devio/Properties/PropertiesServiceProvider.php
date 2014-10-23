@@ -28,7 +28,7 @@ class PropertiesServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-
+        $this->app->bind('property', 'Devio\Properties\PropertyManager');
 	}
 
 	/**
@@ -38,7 +38,7 @@ class PropertiesServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return [];
+		return ['property'];
 	}
 
 }
