@@ -21,11 +21,23 @@ class Property extends Eloquent {
     }
 
     /**
+     * Regular relationship to all the property values.
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function value()
     {
         return $this->hasMany('Devio\Properties\Value');
+    }
+
+    /**
+     * Parent category relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function category()
+    {
+        return $this->belongsTo('Devio\Properties\PropertyCategory');
     }
 
 } 

@@ -23,6 +23,8 @@ class CreatePropertiesTable extends Migration {
             $table->string('name');
             $table->string('label');
 
+            $table->integer('property_category_id');
+
             $table->timestamps();
         });
 	}
