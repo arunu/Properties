@@ -1,6 +1,6 @@
-<?php namespace Devio\Properties;
+<?php namespace Devio\Properties\Observers;
 
-class PropertyObserver {
+class EntityObserver {
 
     /**
      * Handling entity saved event. Manages to create or delete (just empty) instances
@@ -19,4 +19,5 @@ class PropertyObserver {
             ]);
         }
     }
+
 }

@@ -1,5 +1,6 @@
 <?php namespace Devio\Properties;
 
+use Devio\Properties\Observers\EntityObserver;
 use Devio\Properties\Relations\PropertyHasMany;
 
 trait PropertyTrait {
@@ -39,8 +40,8 @@ trait PropertyTrait {
 
         static::$properties = $instance->properties()->get()->lists('name', 'id');
 
-        // Register custom observer for handling events
-        static::observe(new PropertyObserver);
+        // Registering value observer
+        static::observe(new EntityObserver);
     }
 
     /**

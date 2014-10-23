@@ -25,4 +25,4 @@ class Value extends Eloquent {
         return $this->morphTo();
     }
 
-} 
+}

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class AttributesServiceProvider extends ServiceProvider {
+class PropertiesServiceProvider extends ServiceProvider {
 
 	/**
 	 * Indicates if loading of the provider is deferred.
@@ -28,7 +28,7 @@ class AttributesServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+
 	}
 
 	/**
@@ -38,7 +38,7 @@ class AttributesServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array();
+		return [];
 	}
 
 }
