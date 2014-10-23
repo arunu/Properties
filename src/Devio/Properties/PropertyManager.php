@@ -18,7 +18,7 @@ class PropertyManager {
      */
     public function getCategoryProperties($category)
     {
-        return PropertyCategory::with('properties')->where('name', $category)->get();
+        return PropertyCategory::with('properties')->where('name', $category)->first()->properties;
     }
 
 } 

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreatePropertyCategoryTable extends Migration {
+class CreatePropertyCategoriesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,11 +12,12 @@ class CreatePropertyCategoryTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('property_category', function(Blueprint $table)
+		Schema::create('property_categories', function(Blueprint $table)
 		{
 			$table->increments('id');
 
             $table->string('name');
+            $table->string('title');
 
 			$table->timestamps();
 		});
@@ -30,7 +31,7 @@ class CreatePropertyCategoryTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('property_category');
+		Schema::drop('property_categories');
 	}
 
 }

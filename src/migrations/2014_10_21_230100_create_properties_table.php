@@ -22,6 +22,8 @@ class CreatePropertiesTable extends Migration {
 
             $table->string('name');
             $table->string('label');
+            $table->string('placeholder');
+            $table->string('help_block');
 
             $table->integer('property_category_id');
 
