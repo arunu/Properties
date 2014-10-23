@@ -229,4 +229,17 @@ trait PropertyTrait {
         }
     }
 
+    /**
+     * Checking if a property is set using the __isset magic method. If not found
+     * just returns its default behaviour.
+     *
+     * @param $key
+     *
+     * @return bool
+     */
+    public function __isset($key)
+    {
+        return ($this->isProperty($key) && $this->getPropertyValue($key)) ? true : parent::__isset($key);
+    }
+
 } 
