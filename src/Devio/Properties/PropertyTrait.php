@@ -1,5 +1,6 @@
 <?php namespace Devio\Properties;
 
+use Devio\Properties\Models\Property;
 use Devio\Properties\Observers\EntityObserver;
 use Devio\Properties\Relations\PropertyHasMany;
 
@@ -125,7 +126,12 @@ trait PropertyTrait {
         // If not is found just return the getPropertyElement result which
         // is null.
         if ($element = $this->getValueElement($foreignKey))
+        {
+            dd($element);
+
             return $element->value;
+        }
+
 
         return $element;
     }
