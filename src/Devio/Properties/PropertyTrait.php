@@ -1,5 +1,6 @@
 <?php namespace Devio\Properties;
 
+use Devio\Properties\Exceptions\ValueIsNotInteger;
 use Devio\Properties\Models\Property;
 use Devio\Properties\Observers\EntityObserver;
 use Devio\Properties\Relations\PropertyHasMany;
@@ -175,6 +176,16 @@ trait PropertyTrait {
         // just add a new item to the value creation queue for later creation.
         if ($element)
         {
+            $property = $this->getProperty($element->{$this->getPropertyForeignKey()});
+
+            // If the property we are playing with is a collection, check if the value
+            // assigned is numeric in order to make consistent relationships in the
+            // database. If it iss different just throws an exception to notify.
+            if ($property->isCollection() && ! is_numeric($value))
+            {
+                throw new ValueIsNotInteger;
+            }
+
             $element->value = $value;
         }
         else
