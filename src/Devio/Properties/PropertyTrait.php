@@ -248,9 +248,8 @@ trait PropertyTrait {
         // Stores if the element already exists in the queue. If does and
         // $override is true, just filter it to delete this element
         // which will be added again containing the new value
-        $existsInQueue = in_array($foreignKey, array_column($this->valueCreationQueue, 'property'));
 
-        if ($override && $existsInQueue)
+        if ($override && $this->existsValueInQueue($foreignKey))
         {
             // Filter the queue taking out only the element that is supposed
             // to be replaced.
@@ -265,6 +264,18 @@ trait PropertyTrait {
             'property' => $foreignKey,
             'value'    => $value
         ];
+    }
+
+    /**
+     * Returns true if the value already exists in the queue.
+     *
+     * @param $foreignKey
+     *
+     * @return bool
+     */
+    protected function existsValueInQueue($foreignKey)
+    {
+        return in_array($foreignKey, array_column($this->valueCreationQueue, 'property'));
     }
 
     /**
