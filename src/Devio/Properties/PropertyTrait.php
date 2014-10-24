@@ -1,6 +1,5 @@
 <?php namespace Devio\Properties;
 
-use Devio\Properties\Exceptions\WrongPropertyTypeDeclaration;
 use Devio\Properties\Models\Property;
 use Devio\Properties\Observers\EntityObserver;
 use Devio\Properties\Relations\PropertyHasMany;
@@ -103,25 +102,6 @@ trait PropertyTrait {
     }
 
     /**
-     * Finds the collection associated entity (class) item. If not found just
-     * throws an exception.
-     *
-     * @param $type
-     *
-     * @return mixed
-     * @throws WrongPropertyTypeDeclaration
-     */
-    protected function getCollectionClass($type)
-    {
-        preg_match('/collection\((\w+)\)/', $type, $result);
-
-        if (is_array($result))
-            return $result[1];
-
-        throw new WrongPropertyTypeDeclaration;
-    }
-
-    /**
      * Finds into the eloquent collection results the collection that belongs
      * to the foreign key
      *
@@ -163,11 +143,11 @@ trait PropertyTrait {
             // If the property type is a collection we have to find which collection
             // it is and find the value name associated. If is not, let's assume
             // it's a plain element such as string or integer and just return
-            if (strpos($property->type, 'collection') !== false)
+            if ($property->isCollection())
             {
                 $collection = $this->getCollectionClass($property->type);
 
-                return with(new $collection)->find($element->value)->getNameValue();
+                return with(new $collection)->find($element->value)->getValueField();
             }
             else
             {

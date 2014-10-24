@@ -2,6 +2,11 @@
 
 interface Collectionable {
 
-    public function getNameValue();
+    /**
+     * Should return the model value field
+     *
+     * @return mixed
+     */
+    public function getValueField();
 
 } 
