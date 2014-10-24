@@ -42,6 +42,16 @@ class Property extends Eloquent {
     }
 
     /**
+     * Relationship to the collections table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function collection()
+    {
+        return $this->hasMany('Devio\Properties\Models\PropertyCollection');
+    }
+
+    /**
      * If the property type is a collection will return true.
      *
      * @return bool
@@ -52,22 +62,47 @@ class Property extends Eloquent {
     }
 
     /**
-     * Finds the collection associated entity (class) item. If not found just
-     * throws an exception.
-     *
-     * @param $type
+     * Finds the collection to work with and returns it. The collection might be
+     * another eloquent class or a set of recrods saved into the property_collections
+     * table. If nothing is found just throws an exception.
      *
      * @return mixed
      * @throws WrongPropertyTypeDeclaration
      */
-    protected function getCollectionClass($type)
+    public function getCollection()
     {
-        preg_match('/collection\((\w+)\)/', $type, $result);
+        if ($this->type === 'collection')
+        {
+            return $this->collection;
+        }
+        else
+        {
+            $class = $this->getCollectionClass();
+
+            // If no collection class is found may mean that the property type
+            // string is not well formatted, just notifies this fact.
+            if (is_null($class))
+                throw new WrongPropertyTypeDeclaration;
+
+            return forward_static_call([$class, 'all']);
+        }
+    }
+
+    /**
+     * Returns the collection associated class:
+     * collection(City) -> City
+     * collection(Language) -> Language
+     *
+     * @return mixed
+     */
+    public function getCollectionClass()
+    {
+        preg_match('/collection\((\w+)\)/', $this->type, $result);
 
         if (is_array($result))
             return $result[1];
 
-        throw new WrongPropertyTypeDeclaration;
+        return null;
     }
 
 } 

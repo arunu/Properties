@@ -146,9 +146,9 @@ trait PropertyTrait {
             // it's a plain element such as string or integer and just return
             if ($property->isCollection())
             {
-                $collection = $this->getCollectionClass($property->type);
+                $collection = $property->getCollection();
 
-                return with(new $collection)->find($element->value)->getValueField();
+                return $collection->find($element->value)->getValueField();
             }
             else
             {
@@ -165,6 +165,8 @@ trait PropertyTrait {
      *
      * @param $key
      * @param $value
+     *
+     * @throws ValueIsNotInteger
      */
     public function setPropertyValue($key, $value)
     {
