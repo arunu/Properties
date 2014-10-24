@@ -26,7 +26,7 @@ class Property extends Eloquent {
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function value()
+    public function values()
     {
         return $this->hasMany('Devio\Properties\Models\Value');
     }
@@ -59,6 +59,16 @@ class Property extends Eloquent {
     public function isCollection()
     {
         return (strpos($this->type, 'collection') !== false);
+    }
+
+    /**
+     * Returns if the property manages multiple values.
+     *
+     * @return mixed
+     */
+    public function isMultiple()
+    {
+        return $this->multiple;
     }
 
     /**

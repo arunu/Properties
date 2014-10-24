@@ -85,9 +85,33 @@ trait PropertyTrait {
      *
      * @param $id
      */
-    protected function getProperty($id)
+    public function getProperty($id)
     {
         return static::$properties->find($id);
+    }
+
+    /**
+     * Return the property from its name
+     *
+     * @param $name
+     *
+     * @return mixed
+     */
+    public function getPropertyByName($name)
+    {
+        return $this->getProperty($this->findPropertyKey($name));
+    }
+
+    /**
+     * Retrieve the property object of the elements collection
+     *
+     * @param $elements
+     *
+     * @return mixed
+     */
+    public function gerPropertyByElements($elements)
+    {
+        return $this->getProperty($elements->first()->{$this->getPropertyForeignKey()});
     }
 
     /**
@@ -97,7 +121,7 @@ trait PropertyTrait {
      *
      * @return mixed
      */
-    protected function findPropertyKey($name)
+    public function findPropertyKey($name)
     {
         return array_search($name, static::$properties->lists('name', 'id'));
     }
@@ -110,15 +134,18 @@ trait PropertyTrait {
      *
      * @return mixed
      */
-    protected function getValueElement($foreignKey)
+    public function getValueElement($foreignKey)
     {
-        foreach ($this->values as $value)
+        $values = $this->values->filter(function ($item) use ($foreignKey)
         {
-            if ($value->{$this->getPropertyForeignKey()} == $foreignKey)
+            if ($item->{$this->getPropertyForeignKey()} == $foreignKey)
             {
-                return $value;
+                return $item;
             }
-        }
+        });
+
+        if ($values->count())
+            return $values;
 
         return null;
     }
@@ -139,26 +166,20 @@ trait PropertyTrait {
         // If the property is found into the values collection return its value.
         // If not is found just return the getPropertyElement result which
         // is null.
-        if ($element = $this->getValueElement($foreignKey))
+        if ($elements = $this->getValueElement($foreignKey))
         {
-            $property = $this->getProperty($element->{$this->getPropertyForeignKey()});
+            $property = $this->getPropertyByElements($elements);
 
-            // If the property type is a collection we have to find which collection
-            // it is and find the value name associated. If is not, let's assume
-            // it's a plain element such as string or integer and just return
-            if ($property->isCollection())
-            {
-                $collection = $property->getCollection();
+            // Instantiating the formatter which will be responsible of determine
+            // which type of output the element requires, we will just return
+            // its formatted content
+            $formatter = new OutputFormatter($elements, $property);
 
-                return $collection->find($element->value)->getValueField();
-            }
-            else
-            {
-                return $element->value;
-            }
+            return $formatter->format();
         }
 
-        return $element;
+        return null;
+//        return $elements;
     }
 
     /**
@@ -172,15 +193,28 @@ trait PropertyTrait {
      */
     public function setPropertyValue($key, $value)
     {
-        $foreignKey = $this->findPropertyKey($key);
-        $element    = $this->getValueElement($foreignKey);
+//        $foreignKey = $this->findPropertyKey($key);
+
+        $setter = new PropertySetter($this, $key, $value);
+
+        $setter->perform();
+
+        return;
+
+//        die();
 
         // Is any value element was found, update the value and that's all we need.
         // If no element is found means it doesn't even exist into the database,
         // just add a new item to the value creation queue for later creation.
-        if ($element)
+        if ($elements = $this->getValueElement($foreignKey))
         {
-            $property = $this->getProperty($element->{$this->getPropertyForeignKey()});
+            $property = $this->getPropertyByElements($elements);
+
+            $setter = new PropertySetter($this);
+
+            $setter->set($key, $value);
+
+            die();
 
             // If the property we are playing with is a collection, check if the value
             // assigned is numeric in order to make consistent relationships in the
@@ -199,13 +233,34 @@ trait PropertyTrait {
     }
 
     /**
-     * Adds a new item to the property creation queue.
+     * Adds a new item to the value creation queue. By default will override
+     * any existing value as it's supposed that a same property might be
+     * set more than once for the same item before saving. If override
+     * is set to false, a new value record will be saved. This last
+     * only when working with properties with multiple values.
      *
-     * @param $foreignKey
-     * @param $value
+     * @param      $foreignKey
+     * @param      $value
+     * @param bool $override
      */
-    protected function queueValueCreation($foreignKey, $value)
+    public function queueValueCreation($foreignKey, $value, $override = true)
     {
+        // Stores if the element already exists in the queue. If does and
+        // $override is true, just filter it to delete this element
+        // which will be added again containing the new value
+        $existsInQueue = in_array($foreignKey, array_column($this->valueCreationQueue, 'property'));
+
+        if ($override && $existsInQueue)
+        {
+            // Filter the queue taking out only the element that is supposed
+            // to be replaced.
+            $this->valueCreationQueue = array_filter($this->valueCreationQueue, function($item) use ($foreignKey)
+            {
+                if ($item['property'] != $foreignKey)
+                    return $item;
+            });
+        }
+
         $this->valueCreationQueue[] = [
             'property' => $foreignKey,
             'value'    => $value

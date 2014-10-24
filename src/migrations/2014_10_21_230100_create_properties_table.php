@@ -18,6 +18,8 @@ class CreatePropertiesTable extends Migration {
 
             $table->string('type');
 
+            $table->boolean('multiple');
+
             $table->string('entity');
 
             $table->string('name');

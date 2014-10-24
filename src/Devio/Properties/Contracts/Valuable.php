@@ -1,6 +1,6 @@
 <?php namespace Devio\Properties\Contracts;
 
-interface Collectionable {
+interface Valuable {
 
     /**
      * Should return the model value field

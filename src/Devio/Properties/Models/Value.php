@@ -1,13 +1,16 @@
 <?php namespace Devio\Properties\Models;
 
+use Devio\Properties\Contracts\Valuable;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class Value extends Eloquent {
+class Value extends Eloquent implements Valuable {
 
     /**
      * @var array
      */
     protected $guarded = [];
+
+    public static $valueField = 'value';
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -25,4 +28,21 @@ class Value extends Eloquent {
         return $this->morphTo();
     }
 
+    /**
+     * Should return the model value field
+     *
+     * @return mixed
+     */
+    public function getValueField()
+    {
+        return $this->{static::$valueField};
+    }
+
+    /**
+     * @return string
+     */
+    public function getValueFieldName()
+    {
+        return static::$valueField;
+    }
 }

@@ -1,9 +1,10 @@
 <?php namespace Devio\Properties\Models; 
 
 use Devio\Properties\Contracts\Collectionable;
+use Devio\Properties\Contracts\Valuable;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class PropertyCollection extends Eloquent implements Collectionable {
+class PropertyCollection extends Eloquent implements Valuable {
 
     /**
      * Relationship to the properties table.
