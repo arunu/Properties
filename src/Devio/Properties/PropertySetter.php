@@ -121,7 +121,7 @@ class PropertySetter {
         if ($performType == 'simple' && (is_object($this->value)))
             throw new ObjectValueNotAllowed;
 
-        if ($performType == 'multiple' && (( ! $this->value instanceof Collection) || ! is_array($this->value)))
+        if ($performType == 'multiple' && ! $this->value instanceof Collection && ! is_array($this->value))
             throw new CollectionValueRequired;
     }
 }
