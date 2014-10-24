@@ -1,6 +1,7 @@
 <?php namespace Devio\Properties\Models;
 
 use Devio\Properties\Contracts\Valuable;
+use Devio\Properties\Observers\ValueObserver;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class Value extends Eloquent implements Valuable {
@@ -10,7 +11,20 @@ class Value extends Eloquent implements Valuable {
      */
     protected $guarded = [];
 
+    /**
+     * @var string
+     */
     public static $valueField = 'value';
+
+    /**
+     * Booting the model. Just registering the observer instance.
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::observe(new ValueObserver);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

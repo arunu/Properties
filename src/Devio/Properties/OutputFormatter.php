@@ -1,7 +1,5 @@
 <?php namespace Devio\Properties;
 
-use Devio\Properties\Models\Value;
-
 class OutputFormatter {
 
     private $elements;

@@ -1,8 +1,8 @@
 <?php namespace Devio\Properties\Models;
 
-use Devio\Properties\Exceptions\WrongPropertyTypeDeclaration;
 use Devio\Properties\Observers\PropertyObserver;
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Devio\Properties\Exceptions\WrongPropertyTypeDeclaration;
 
 class Property extends Eloquent {
 

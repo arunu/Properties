@@ -1,9 +1,9 @@
 <?php namespace Devio\Properties;
 
-use Devio\Properties\Exceptions\ValueIsNotInteger;
 use Devio\Properties\Models\Property;
 use Devio\Properties\Observers\EntityObserver;
 use Devio\Properties\Relations\PropertyHasMany;
+use Devio\Properties\Exceptions\ValueIsNotInteger;
 
 trait PropertyTrait {
 
@@ -193,43 +193,11 @@ trait PropertyTrait {
      */
     public function setPropertyValue($key, $value)
     {
-//        $foreignKey = $this->findPropertyKey($key);
-
+        // Create a new instance of the property setter setting the current
+        // assignation values and perform it
         $setter = new PropertySetter($this, $key, $value);
 
         $setter->perform();
-
-        return;
-
-//        die();
-
-        // Is any value element was found, update the value and that's all we need.
-        // If no element is found means it doesn't even exist into the database,
-        // just add a new item to the value creation queue for later creation.
-        if ($elements = $this->getValueElement($foreignKey))
-        {
-            $property = $this->getPropertyByElements($elements);
-
-            $setter = new PropertySetter($this);
-
-            $setter->set($key, $value);
-
-            die();
-
-            // If the property we are playing with is a collection, check if the value
-            // assigned is numeric in order to make consistent relationships in the
-            // database. If it iss different just throws an exception to notify.
-            if ($property->isCollection() && ! is_numeric($value))
-            {
-                throw new ValueIsNotInteger;
-            }
-
-            $element->value = $value;
-        }
-        else
-        {
-            $this->queueValueCreation($foreignKey, $value);
-        }
     }
 
     /**
