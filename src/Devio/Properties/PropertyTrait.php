@@ -40,8 +40,8 @@ trait PropertyTrait {
     {
         $instance           = new static;
         static::$properties = $instance->properties()->get();
-//        static::$properties = $instance->properties()->get()->lists('name', 'id');
-        // Registering value observer
+
+        // Registering entity observer
         static::observe(new EntityObserver);
     }
 
@@ -124,7 +124,9 @@ trait PropertyTrait {
     }
 
     /**
-     * Returns the property value into the relations collections.
+     * Returns the property value from the value relation. If the property
+     * to be accessed is a collection, the readable value for it will
+     * be provided.
      *
      * @param $key
      *
