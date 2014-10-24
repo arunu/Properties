@@ -1,5 +1,6 @@
 <?php namespace Devio\Properties;
 
+use Devio\Properties\Exceptions\WrongPropertyTypeDeclaration;
 use Devio\Properties\Models\Property;
 use Devio\Properties\Observers\EntityObserver;
 use Devio\Properties\Relations\PropertyHasMany;
@@ -37,10 +38,9 @@ trait PropertyTrait {
      */
     public static function bootPropertyTrait()
     {
-        $instance = new static;
-
-        static::$properties = $instance->properties()->get()->lists('name', 'id');
-
+        $instance           = new static;
+        static::$properties = $instance->properties()->get();
+//        static::$properties = $instance->properties()->get()->lists('name', 'id');
         // Registering value observer
         static::observe(new EntityObserver);
     }
@@ -77,7 +77,17 @@ trait PropertyTrait {
      */
     protected function isProperty($key)
     {
-        return in_array($key, static::$properties);
+        return in_array($key, array_column(static::$properties->toArray(), 'name'));
+    }
+
+    /**
+     * Return the property object that matches the id.
+     *
+     * @param $id
+     */
+    protected function getProperty($id)
+    {
+        return static::$properties->find($id);
     }
 
     /**
@@ -89,7 +99,26 @@ trait PropertyTrait {
      */
     protected function findPropertyKey($name)
     {
-        return array_search($name, static::$properties);
+        return array_search($name, static::$properties->lists('name', 'id'));
+    }
+
+    /**
+     * Finds the collection associated entity (class) item. If not found just
+     * throws an exception.
+     *
+     * @param $type
+     *
+     * @return mixed
+     * @throws WrongPropertyTypeDeclaration
+     */
+    protected function getCollectionClass($type)
+    {
+        preg_match('/collection\((\w+)\)/', $type, $result);
+
+        if (is_array($result))
+            return $result[1];
+
+        throw new WrongPropertyTypeDeclaration;
     }
 
     /**
@@ -105,7 +134,9 @@ trait PropertyTrait {
         foreach ($this->values as $value)
         {
             if ($value->{$this->getPropertyForeignKey()} == $foreignKey)
+            {
                 return $value;
+            }
         }
 
         return null;
@@ -127,11 +158,22 @@ trait PropertyTrait {
         // is null.
         if ($element = $this->getValueElement($foreignKey))
         {
-            dd($element);
+            $property = $this->getProperty($element->{$this->getPropertyForeignKey()});
 
-            return $element->value;
+            // If the property type is a collection we have to find which collection
+            // it is and find the value name associated. If is not, let's assume
+            // it's a plain element such as string or integer and just return
+            if (strpos($property->type, 'collection') !== false)
+            {
+                $collection = $this->getCollectionClass($property->type);
+
+                return with(new $collection)->find($element->value)->getNameValue();
+            }
+            else
+            {
+                return $element->value;
+            }
         }
-
 
         return $element;
     }
@@ -146,8 +188,7 @@ trait PropertyTrait {
     public function setPropertyValue($key, $value)
     {
         $foreignKey = $this->findPropertyKey($key);
-
-        $element = $this->getValueElement($foreignKey);
+        $element    = $this->getValueElement($foreignKey);
 
         // Is any value element was found, update the value and that's all we need.
         // If no element is found means it doesn't even exist into the database,
@@ -172,7 +213,7 @@ trait PropertyTrait {
     {
         $this->valueCreationQueue[] = [
             'property' => $foreignKey,
-            'value' => $value
+            'value'    => $value
         ];
     }
 
@@ -247,5 +288,4 @@ trait PropertyTrait {
     {
         return ($this->isProperty($key) && $this->getPropertyValue($key)) ? true : parent::__isset($key);
     }
-
-} 
+}
