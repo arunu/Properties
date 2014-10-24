@@ -1,5 +1,7 @@
 <?php namespace Devio\Properties;
 
+use Devio\Properties\Models\PropertyCategory;
+
 class PropertyManager {
 
     /**
