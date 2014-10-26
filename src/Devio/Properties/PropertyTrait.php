@@ -156,10 +156,11 @@ trait PropertyTrait {
      * be provided.
      *
      * @param $key
+     * @param $valueObject
      *
      * @return mixed
      */
-    public function getPropertyValue($key)
+    public function getPropertyValue($key, $valueObject = false)
     {
         $foreignKey = $this->findPropertyKey($key);
 
@@ -173,13 +174,12 @@ trait PropertyTrait {
             // Instantiating the formatter which will be responsible of determine
             // which type of output the element requires, we will just return
             // its formatted content
-            $formatter = new OutputFormatter($elements, $property);
+            $formatter = new OutputFormatter($elements, $property, $valueObject);
 
             return $formatter->format();
         }
 
         return null;
-//        return $elements;
     }
 
     /**
@@ -281,6 +281,9 @@ trait PropertyTrait {
         foreach ($this->properties as $property)
         {
             $attributes[$property->name] = $this->getPropertyValue($property->name);
+
+            if ($property->isCollection())
+                $attributes[$property->name.'_value'] = $this->getPropertyValue($property->name, true)->value;
         }
 
         return $attributes;
