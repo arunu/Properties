@@ -109,7 +109,7 @@ trait PropertyTrait {
      *
      * @return mixed
      */
-    public function gerPropertyByElements($elements)
+    public function getPropertyByElements($elements)
     {
         return $this->getProperty($elements->first()->{$this->getPropertyForeignKey()});
     }
@@ -266,6 +266,24 @@ trait PropertyTrait {
         $instance = new Property;
 
         return $instance->getForeignKey();
+    }
+
+    /**
+     * Rewritten parent toArray to include the properties in the same
+     * array
+     *
+     * @return mixed
+     */
+    public function toArray()
+    {
+        $attributes = parent::toArray();
+
+        foreach ($this->properties as $property)
+        {
+            $attributes[$property->name] = $this->getPropertyValue($property->name);
+        }
+
+        return $attributes;
     }
 
     /**
