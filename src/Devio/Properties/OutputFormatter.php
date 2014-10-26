@@ -1,9 +1,17 @@
 <?php namespace Devio\Properties;
 
+use Illuminate\Database\Eloquent\Collection;
+
 class OutputFormatter {
 
+    /**
+     * @var
+     */
     private $elements;
 
+    /**
+     * @var
+     */
     private $property;
 
     /**
@@ -38,6 +46,9 @@ class OutputFormatter {
         // in the values relationship and return it well formatted or
         // even as model object if it was specified when created
         $result = $result->pop();
+
+//        var_dump($result);
+
         return $this->returnValueObject ? $result : $result->getValueField();
     }
 
@@ -50,15 +61,22 @@ class OutputFormatter {
     public function formatCollectionOutput()
     {
         $collection = $this->property->getCollection();
+        $returnValueObject = $this->returnValueObject;
+        $elements = new Collection();
 
         // Mapping every single element and replacing the "value" field
         // to the proper value to be shown. This avoids to create a
-        // new collection re-using the Value collection as base
-        $elements = $this->elements->map(function ($item) use ($collection)
+        // new collection re-using the Value collection as base.
+        // The item is being cloned as this way it does not
+        // modifies any model structure.
+        $this->elements->each(function($item) use ($collection, $returnValueObject, $elements)
         {
-            $item->{$item->getValueFieldName()} = $collection->find($item->getValueField())->getValueField();
+            $clone = $item->replicate();
 
-            return $item;
+            if ( ! $returnValueObject)
+                $clone->{$clone->getValueFieldName()} = $collection->find($clone->getValueField())->getValueField();
+
+            $elements->push($clone);
         });
 
         return $elements;
