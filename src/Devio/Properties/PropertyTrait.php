@@ -287,6 +287,7 @@ trait PropertyTrait {
 
             $element['value'] = $value ? $value->value : $value;
             $element['formatted_value'] = $this->getPropertyValue($property->name);
+            $element['entity_id'] = $this->id;
 
             if ($property->isCollection())
                 $element['collection'] = $property->collection;
