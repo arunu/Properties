@@ -283,8 +283,15 @@ trait PropertyTrait {
             $attributes[$property->name] = $this->getPropertyValue($property->name);
 
             if ($property->isCollection())
-                $attributes[$property->name.'_value'] = $this->getPropertyValue($property->name, true)->value;
+            {
+                $value = $this->getPropertyValue($property->name, true);
+
+                if ($value)
+                    $attributes[$property->name . '_value'] = $value->value;
+            }
         }
+
+        $attributes['entity'] = $this->getMorphClass();
 
         return $attributes;
     }
