@@ -283,8 +283,13 @@ trait PropertyTrait {
         {
             $element = $property->toArray();
 
-            $element['value'] = $this->getPropertyValue($property->name, true);
+            $value = $this->getPropertyValue($property->name, true);
+
+            $element['value'] = $value ? $value->value : $value;
             $element['formatted_value'] = $this->getPropertyValue($property->name);
+
+            if ($property->isCollection())
+                $element['collection'] = $property->collection;
 
             $properties[$property->category->name][] = $element;
         }
