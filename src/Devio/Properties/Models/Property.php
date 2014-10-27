@@ -38,7 +38,7 @@ class Property extends Eloquent {
      */
     public function category()
     {
-        return $this->belongsTo('Devio\Properties\Models\PropertyCategory');
+        return $this->belongsTo('Devio\Properties\Models\PropertyCategory', 'property_category_id');
     }
 
     /**
