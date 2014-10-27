@@ -18,7 +18,7 @@ class CreateValuesTable extends Migration {
 
             $table->integer('property_id');
 
-            $table->string('value');
+            $table->string('value')->nullable();
 
             $table->string('entity_type');
             $table->integer('entity_id');
