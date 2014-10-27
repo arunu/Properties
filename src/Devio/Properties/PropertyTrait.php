@@ -277,21 +277,20 @@ trait PropertyTrait {
     public function toArray()
     {
         $attributes = parent::toArray();
+        $properties = [];
 
         foreach ($this->properties as $property)
         {
-            $attributes[$property->name] = $this->getPropertyValue($property->name);
+            $element = $property->toArray();
 
-            if ($property->isCollection())
-            {
-                $value = $this->getPropertyValue($property->name, true);
+            $element['value'] = $this->getPropertyValue($property->name, true);
+            $element['formatted_value'] = $this->getPropertyValue($property->name);
 
-                if ($value)
-                    $attributes[$property->name . '_value'] = $value->value;
-            }
+            $properties[$property->category->name][] = $element;
         }
 
         $attributes['entity'] = $this->getMorphClass();
+        $attributes['properties'] = $properties;
 
         return $attributes;
     }
